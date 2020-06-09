@@ -13,6 +13,7 @@ def projectProperties = [
 
 //Variaveis
 env.BRANCH = "master"
+env.CHROME_BIN='/usr/bin/chromium'
 
 node('nodejs') {
     try {
@@ -29,6 +30,8 @@ node('nodejs') {
                 }
 
                 stage('Compilar') {
+                   sh 'export CHROME_BIN=/usr/bin/chromium'
+                   sh 'echo "CHROME BIN VAR = $CHROME_BIN" '
                    sh 'npm i' 
                 }
 
