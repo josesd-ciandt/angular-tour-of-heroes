@@ -28,6 +28,10 @@ node('nodejs') {
                     ])
                 }
 
+                stage('Compilar') {
+                   sh 'npm i' 
+                }
+
                 stage('Run Tests') {
                     runUnitTestsPublishReports()
                 }
