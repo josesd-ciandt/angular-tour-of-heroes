@@ -29,7 +29,25 @@ node('nodejs') {
                 }
 
                 stage('Run Tests') {
-                    sh 'npm run test'
+                    runUnitTestsPublishReports()
+                }
+
+                stage('Build Angular') {
+                    sh 'npm run build'
+                }
+
+                stage ('Sonar') {
+                    sh 'echo "Executando Teste Sonar"'
+                }
+
+                stage('promotion to Production env') {
+                    timeout(time:5, unit:'DAYS') {
+                        input 'promotion to Production env?'
+                    }
+                }
+
+                stage('Deploy') {
+                   sh 'echo "Deploy Projeto"'     
                 }
             }
         }
@@ -42,4 +60,10 @@ node('nodejs') {
             deleteDir()
         }
     }
+}
+
+def runUnitTestsPublishReports() { 
+    sh 'npm run test-coverage'
+    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: "coverage", reportFiles: "index.html", reportName: "Test Coverage Results"])
+    junit allowEmptyResults: false, testResults: '**/report/junit-report.xml'
 }
