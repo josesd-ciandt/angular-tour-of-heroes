@@ -30,6 +30,12 @@ module.exports = function (config) {
     browserDisconnectTolerance: 3,
     browserNoActivityTimeout: 60000,
     failOnEmptyTestSuite: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    }
   });
 };
