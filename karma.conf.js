@@ -31,11 +31,8 @@ module.exports = function (config) {
     browserNoActivityTimeout: 60000,
     failOnEmptyTestSuite: false,
     restartOnFileChange: true,
-    customLaunchers: {
-      ChromeHeadlessNoSandbox: {
-        base: 'ChromeHeadless',
-        flags: ['--no-sandbox']
-      }
+    chromeOptions: {
+      args: ['--no-sandbox']
     }
   });
 };
