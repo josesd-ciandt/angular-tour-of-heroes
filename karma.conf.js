@@ -29,12 +29,7 @@ module.exports = function (config) {
     browserDisconnectTimeout: 10000,
     browserDisconnectTolerance: 3,
     browserNoActivityTimeout: 60000,
-    flags: [
-      '--disable-web-security',
-      '--disable-gpu',
-      '--no-sandbox'
-    ],
-    singleRun: true,
+    failOnEmptyTestSuite: false,
     restartOnFileChange: true
   });
 };
