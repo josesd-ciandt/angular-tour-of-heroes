@@ -67,7 +67,7 @@ node('nodejs') {
 }
 
 def runUnitTestsPublishReports() { 
-    sh 'npm run test-coverage'
+    sh 'npm run test'
     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: "coverage", reportFiles: "index.html", reportName: "Test Coverage Results"])
     junit allowEmptyResults: false, testResults: '**/report/junit-report.xml'
 }
