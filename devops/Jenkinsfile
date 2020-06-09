@@ -12,50 +12,47 @@ def projectProperties = [
 ]
 
 //Variaveis
-env.BRANCH = "master"
-env.CHROME_BIN='/usr/bin/chromium'
-
 node('nodejs') {
+
+    env.BRANCH = "master"
+    env.CHROME_BIN='/usr/bin/chromium'
+
     try {
         timestamps {
-            ansiColor('gnome-terminal') {
-                stage('Checkout do Projeto') {
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: "${BRANCH}"]],
-                        doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-                        extensions: scm.extensions,
-                        userRemoteConfigs: scm.userRemoteConfigs
-                    ])
-                }
+            stage('Checkout do Projeto') {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: "${BRANCH}"]],
+                    doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+                    extensions: scm.extensions,
+                    userRemoteConfigs: scm.userRemoteConfigs
+                ])
+            }
 
-                stage('Compilar') {
-                   sh 'export CHROME_BIN=/usr/bin/chromium'
-                   sh 'echo "CHROME BIN VAR = $CHROME_BIN" '
-                   sh 'npm i' 
-                }
+            stage('Compilar') {
+                sh 'npm i' 
+            }
 
-                stage('Run Tests') {
-                    runUnitTestsPublishReports()
-                }
+            stage('Run Tests') {
+                runUnitTestsPublishReports()
+            }
 
-                stage('Build Angular') {
-                    sh 'npm run build'
-                }
+            stage('Build Angular') {
+                sh 'npm run build'
+            }
 
-                stage ('Sonar') {
-                    sh 'echo "Executando Teste Sonar"'
-                }
+            stage ('Sonar') {
+                sh 'echo "Executando Teste Sonar"'
+            }
 
-                stage('promotion to Production env') {
-                    timeout(time:5, unit:'DAYS') {
-                        input 'promotion to Production env?'
-                    }
+            stage('promotion to Production env') {
+                timeout(time:5, unit:'DAYS') {
+                    input 'promotion to Production env?'
                 }
+            }
 
-                stage('Deploy') {
-                   sh 'echo "Deploy Projeto"'     
-                }
+            stage('Deploy') {
+                sh 'echo "Deploy Projeto"'     
             }
         }
  } catch (e) {
