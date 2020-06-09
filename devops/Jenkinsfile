@@ -1,0 +1,45 @@
+def projectProperties = [
+        [$class: 'BuildDiscarderProperty',
+            strategy: [$class: 'LogRotator', //
+            numToKeepStr: '10',
+            daysToKeepStr: 'daysToKeepStr',
+            artifactDaysToKeepStr: '20',
+            artifactNumToKeepStr: '10']],
+        parameters([
+            string(name: 'PARAMETRO_STRING', description: 'Exemplo de Parametro String', defaultValue: 'develop'),
+            booleanParam(name: 'PARAMETRO_BOOLEANO', description: 'Exemplo de Parametro Booleano', defaultValue: true)
+    ])
+]
+
+//Variaveis
+env.BRANCH = "master"
+
+node('nodejs') {
+    try {
+        timestamps {
+            ansiColor('gnome-terminal') {
+                stage('Checkout do Projeto') {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "${BRANCH}"]],
+                        doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+                        extensions: scm.extensions,
+                        userRemoteConfigs: scm.userRemoteConfigs
+                    ])
+                }
+
+                stage('Run Tests') {
+                    sh 'npm run test'
+                }
+            }
+        }
+ } catch (e) {
+        currentBuild.result = 'FAILURE'
+        echo "Fail: ${e}"
+        throw e
+        } finally {
+        stage('Clean workspace') {
+            deleteDir()
+        }
+    }
+}
