@@ -42,31 +42,14 @@ node('nodejs') {
                 sh 'npm run build'
             }
             stage('Analyze static code') {
-                def scannerHome = tool 'SonarScanner';
+                env.SCANNER_HOME = tool 'SonarScanner'
 
-                if (fileExists('/root/sonar-scanner/conf/sonar-scanner.properties')) {
-                    sh "rm -v /root/sonar-scanner/conf/sonar-scanner.properties"
+                withSonarQubeEnv(credentialsId: "sonar-local-token") {
+                    sonarQubeAnalysis()
                 }
-                withSonarQubeEnv('SonarQube') {
-                    sh """
-                    ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=teste \
-                        -Dsonar.projectName=tour-of-heroes \
-                        -DprojectVersion=0.1.1 \
-                        -Dsonar.language=ts \
-                        -Dsonar.projectBaseDir=./ \
-                        -Dsonar.sources=src \
-                        -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts,src/app/app.module.ts \
-                        -Dsonar.tests=src \
-                        -Dsonar.test.inclusions=**/*.spec.ts \
-                        -Dsonar.ts.tslintconfigpath=tslint.json \
-                        -Dsonar.ts.lcov.reportpath=coverage/lcov.info \
-                        -Dsonar.sourceEncoding=UTF-8 \
-                        -Dsonar.scm.provider=git \
-                        -Dsonar.scm.enabled=true
-                    """
+                sleep time: 1, unit: 'MINUTES'
+                validateSonarQualityGate()
                 }
-
             }
 
             stage("Check Quality Gate") {
@@ -113,3 +96,34 @@ def runUnitTestsPublishReports() {
             reportName: "TypeScript HTML Report"
     ])
 }
+
+def sonarQubeAnalysis() {
+        println("| SONARQUBE ANALYIS|")
+        sh """
+        ${scannerHome}/bin/sonar-scanner \
+            -Dsonar.projectKey=teste \
+            -Dsonar.projectName=tour-of-heroes \
+            -DprojectVersion=0.1.1 \
+            -Dsonar.language=ts \
+            -Dsonar.projectBaseDir=./ \
+            -Dsonar.sources=src \
+            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts,src/app/app.module.ts \
+            -Dsonar.tests=src \
+            -Dsonar.test.inclusions=**/*.spec.ts \
+            -Dsonar.ts.tslintconfigpath=tslint.json \
+            -Dsonar.ts.lcov.reportpath=coverage/lcov.info \
+            -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.scm.provider=git \
+            -Dsonar.scm.enabled=true
+        """
+    }
+
+    def validateSonarQualityGate() {
+        println("| VALIDATE SONAR QUALITYGATE |")
+        def qualityGate = waitForQualityGate()
+        if (qualityGate.status != 'OK') {
+            error "O código não está de acordo com as regras do Sonar: ${qualityGate.status}"
+            // notifyBuild("${APPLICATION_NAME}:${NEW_VERSION} ] - Falha ao executar o build para a branch ${BRANCH}. O código não está de acordo com as regras do Sonar: ${qualityGate.status}",
+            // false)
+        }
+    }
