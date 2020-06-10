@@ -15,8 +15,6 @@ def projectProperties = [
 node('nodejs') {
 
     env.BRANCH = "master"
-    env.CHROME_BIN='/usr/bin/chromium'
-
     try {
         timestamps {
             stage('Checkout do Projeto') {
