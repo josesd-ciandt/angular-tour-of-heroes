@@ -34,9 +34,9 @@ node('nodejs') {
                 sh 'npm i' 
             }
 
-            stage('Run Tests') {
-                runUnitTestsPublishReports()
-            }
+            // stage('Run Tests') {
+            //     runUnitTestsPublishReports()
+            // }
 
             stage('Build Angular') {
                 sh 'npm run build'
