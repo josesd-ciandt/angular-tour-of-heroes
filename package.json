@@ -9,7 +9,7 @@
     "json-server": "nohup node server/json-server.js &",
     "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner",
     "build": "ng build",
-    "test": "karma start --single-run --watch=false --source-map=false --code-coverage --browsers=ChromeHeadless",
+    "test": "ng test --single-run --watch=false --source-map=false --code-coverage --browsers=ChromeHeadless",
     "test-coverage": "npm run json-server & ng test --code-coverage --watch=false --browsers ChromeHeadless"
   },
   "private": true,
