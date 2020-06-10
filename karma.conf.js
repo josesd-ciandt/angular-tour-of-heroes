@@ -31,8 +31,18 @@ module.exports = function (config) {
     browserNoActivityTimeout: 60000,
     failOnEmptyTestSuite: false,
     restartOnFileChange: true,
-    chromeOptions: {
-      args: ['--no-sandbox']
+    customLaunchers: {
+    ChromeHeadlessNoSandbox: {
+      base: 'ChromeHeadless',
+       flags: [
+      '--headless',
+      '--disable-gpu',
+      '--disable-translate',
+      '--disable-extensions',
+      '--no-sandbox',  // Added to fix an issue where of Failed to connect to chrome browser
+     '--remote-debugging-port=9222',
+    ]
+    }
     }
   });
 };
