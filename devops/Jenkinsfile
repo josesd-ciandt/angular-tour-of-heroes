@@ -100,7 +100,7 @@ def runUnitTestsPublishReports() {
 def sonarQubeAnalysis() {
         println("| SONARQUBE ANALYIS|")
         sh """
-        ${scannerHome}/bin/sonar-scanner \
+        ${SCANNER_HOME}/bin/sonar-scanner \
             -Dsonar.projectKey=teste \
             -Dsonar.projectName=tour-of-heroes \
             -DprojectVersion=0.1.1 \
