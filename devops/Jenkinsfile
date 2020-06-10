@@ -41,48 +41,46 @@ node('nodejs') {
             stage('Build Angular') {
                 sh 'npm run build'
             }
+            stage('Analyze static code') {
+                def scannerHome = tool 'SonarScanner';
 
-            node('sonar_local') {
-                stage('Analyze static code') {
-                    def scannerHome = tool 'SonarScanner';
-
-                    if (fileExists('/root/sonar-scanner/conf/sonar-scanner.properties')) {
-                        sh "rm -v /root/sonar-scanner/conf/sonar-scanner.properties"
-                    }
-                    withSonarQubeEnv('SonarQube') {
-                        sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=teste \
-                            -Dsonar.projectName=tour-of-heroes \
-                            -DprojectVersion=0.1.1 \
-                            -Dsonar.language=ts \
-                            -Dsonar.projectBaseDir=./ \
-                            -Dsonar.sources=src \
-                            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts,src/app/app.module.ts \
-                            -Dsonar.tests=src \
-                            -Dsonar.test.inclusions=**/*.spec.ts \
-                            -Dsonar.ts.tslintconfigpath=tslint.json \
-                            -Dsonar.ts.lcov.reportpath=coverage/lcov.info \
-                            -Dsonar.sourceEncoding=UTF-8 \
-                            -Dsonar.scm.provider=git \
-                            -Dsonar.scm.enabled=true
-                        """
-                    }
-
+                if (fileExists('/root/sonar-scanner/conf/sonar-scanner.properties')) {
+                    sh "rm -v /root/sonar-scanner/conf/sonar-scanner.properties"
+                }
+                withSonarQubeEnv('SonarQube') {
+                    sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=teste \
+                        -Dsonar.projectName=tour-of-heroes \
+                        -DprojectVersion=0.1.1 \
+                        -Dsonar.language=ts \
+                        -Dsonar.projectBaseDir=./ \
+                        -Dsonar.sources=src \
+                        -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts,src/app/app.module.ts \
+                        -Dsonar.tests=src \
+                        -Dsonar.test.inclusions=**/*.spec.ts \
+                        -Dsonar.ts.tslintconfigpath=tslint.json \
+                        -Dsonar.ts.lcov.reportpath=coverage/lcov.info \
+                        -Dsonar.sourceEncoding=UTF-8 \
+                        -Dsonar.scm.provider=git \
+                        -Dsonar.scm.enabled=true
+                    """
                 }
 
-                stage("Check Quality Gate") {
-                    timeout(time: 5, unit: 'MINUTES') {
-                        def qualityGate = waitForQualityGate()
-                        if (qualityGate.status != 'OK') {
+            }
 
-                            googlechatnotification message: "[ ${APPLICATION_NAME}:${RELEASE_VERSION} ] - Falha ao executar o build para a branch ${BRANCH}. O código não está de acordo com as regras do Sonar: ${qualityGate.status}", url: "${GOOGLE_NOTIFICATION_SWORD_QA}"
-                            error "O código não está de acordo com as regras do Sonar: ${qualityGate.status}"
+            stage("Check Quality Gate") {
+                timeout(time: 5, unit: 'MINUTES') {
+                    def qualityGate = waitForQualityGate()
+                    if (qualityGate.status != 'OK') {
 
-                        }
+                        googlechatnotification message: "[ ${APPLICATION_NAME}:${RELEASE_VERSION} ] - Falha ao executar o build para a branch ${BRANCH}. O código não está de acordo com as regras do Sonar: ${qualityGate.status}", url: "${GOOGLE_NOTIFICATION_SWORD_QA}"
+                        error "O código não está de acordo com as regras do Sonar: ${qualityGate.status}"
+
                     }
                 }
             }
+            
 
             stage('promotion to Production env') {
                 timeout(time:5, unit:'DAYS') {
