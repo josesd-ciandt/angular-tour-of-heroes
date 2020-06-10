@@ -40,7 +40,7 @@ module.exports = function (config) {
       '--disable-translate',
       '--disable-extensions',
       '--no-sandbox',  // Added to fix an issue where of Failed to connect to chrome browser
-     '--remote-debugging-port=9222',
+     '--remote-debugging-port=9876',
     ]
     }
     }
