@@ -30,13 +30,11 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browserNoActivityTimeout: 30000,
-    browsers: [
-      chromeHeadlessSupported ? 'ChromeHeadless' : 'Chrome'
-    ],
+    browsers: ['ChromeHeadless', 'Chrome'],
     customLaunchers: {
       ChromeHeadless: {
           base: 'Chrome',
-          flags: ['--no-sandbox', '--headless', '--disable-gpu', '--remote-debugging-port=9222']
+          flags: ['--no-sandbox', '--headless', '--disable-gpu', '--disable-translate', '--disable-extensions', '--remote-debugging-port=9223']
       }
     },
     singleRun: true
