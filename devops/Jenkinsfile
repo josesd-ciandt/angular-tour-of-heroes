@@ -107,6 +107,6 @@ node('nodejs') {
 
 def runUnitTestsPublishReports() { 
     sh 'npm run test:coverage'
-    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: "coverage/lcov-report", reportFiles: "index.html", reportName: "Test Coverage Results"])
-    junit allowEmptyResults: false, testResults: 'coverage/junit-clover.xml'
+    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: "coverage/lcov-report/", reportFiles: "index.html", reportName: "Test Coverage Results"])
+    junit allowEmptyResults: false, testResults: 'coverage/clover.xml'
 }
