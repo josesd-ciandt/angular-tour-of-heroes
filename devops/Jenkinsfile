@@ -99,24 +99,24 @@ def runUnitTestsPublishReports() {
 
 def sonarQubeAnalysis() {
         println("| SONARQUBE ANALYIS|")
-        sh """
-        ${SCANNER_HOME}/bin/sonar-scanner  -X \
-            -Dsonar.host.url=http://localhost:9000 \
-            -Dsonar.projectKey=teste \
-            -Dsonar.projectName=tour-of-heroes \
-            -DprojectVersion=0.1.1 \
-            -Dsonar.language=ts \
-            -Dsonar.projectBaseDir=./ \
-            -Dsonar.sources=src \
-            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts,src/app/app.module.ts \
-            -Dsonar.tests=src \
-            -Dsonar.test.inclusions=**/*.spec.ts \
-            -Dsonar.ts.tslintconfigpath=tslint.json \
-            -Dsonar.ts.lcov.reportpath=coverage/lcov.info \
-            -Dsonar.sourceEncoding=UTF-8 \
-            -Dsonar.scm.provider=git \
-            -Dsonar.scm.enabled=true
-        """
+        // sh """
+        // ${SCANNER_HOME}/bin/sonar-scanner  -X \
+        //     -Dsonar.host.url=http://localhost:9000 \
+        //     -Dsonar.projectKey=teste \
+        //     -Dsonar.projectName=tour-of-heroes \
+        //     -DprojectVersion=0.1.1 \
+        //     -Dsonar.language=ts \
+        //     -Dsonar.projectBaseDir=./ \
+        //     -Dsonar.sources=src \
+        //     -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts,src/app/app.module.ts \
+        //     -Dsonar.tests=src \
+        //     -Dsonar.test.inclusions=**/*.spec.ts \
+        //     -Dsonar.ts.tslintconfigpath=tslint.json \
+        //     -Dsonar.ts.lcov.reportpath=coverage/lcov.info \
+        //     -Dsonar.sourceEncoding=UTF-8 \
+        //     -Dsonar.scm.provider=git \
+        //     -Dsonar.scm.enabled=true
+        // """
     }
 
     def validateSonarQualityGate() {
