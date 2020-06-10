@@ -34,9 +34,9 @@ node('nodejs') {
                 sh 'npm i' 
             }
 
-            // stage('Run Tests') {
-            //     runUnitTestsPublishReports()
-            // }
+            stage('Run Tests') {
+                runUnitTestsPublishReports()
+            }
 
             stage('Build Angular') {
                 sh 'npm run build'
@@ -68,7 +68,11 @@ node('nodejs') {
 }
 
 def runUnitTestsPublishReports() { 
-    sh 'npm run test'
-    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: "coverage", reportFiles: "index.html", reportName: "Test Coverage Results"])
-    junit allowEmptyResults: false, testResults: '**/report/junit-report.xml'
+    sh 'npm run test:coverage'
+    step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/clover.xml'])
+    publishHTML (target: [
+        reportDir: 'coverage/lcov-report/',
+        reportFiles: 'index.html',
+        reportName: "TypeScript HTML Report"
+    ])
 }
