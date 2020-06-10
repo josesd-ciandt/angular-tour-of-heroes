@@ -49,8 +49,8 @@ node('nodejs') {
                 }
                 sleep time: 1, unit: 'MINUTES'
                 validateSonarQualityGate()
-                }
             }
+            
 
             stage("Check Quality Gate") {
                 timeout(time: 5, unit: 'MINUTES') {
