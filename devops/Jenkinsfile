@@ -33,7 +33,45 @@ node('nodejs') {
            }
  
            stage('Compilar') {
-               sh 'npm i'
+
+                def jsonfile = readJSON file: 'package.json'
+
+                def host = "echo 45.228.252.10 foo >> /etc/hosts"
+
+                def start = "start"
+                def npmRun = "npm run configure_hosts && "
+
+                // def jsonSlurper = new JsonSlurper()
+                // cfg = jsonSlurper.parseText(packageJsonFile.toString())
+                println("PAMELA " + jsonfile)
+
+
+                jsonfile['scripts']['start'] = npmRun + jsonfile['scripts']['start']
+
+
+                // cfg.scripts.start = npmRun + cfg.scripts.start
+                // println(cfg.scripts.start)
+                println(jsonfile)
+
+
+                jsonfile['scripts']  << ["configure_hosts": host]
+
+                // cfg.scripts << [configureHosts: host]
+
+                println("############")
+                println(jsonfile)
+
+                // packageJsonFile.write(JsonOutput.toJson(cfg))
+                writeJSON file: 'package.json', json: jsonfile
+
+                print("LEEEEEENDO de NOVO")
+
+                // cfg = jsonSlurper.parseText(packageJsonFile.toString())
+                def jsonfile2 = readJSON file: 'package.json'
+                println(jsonfile2)
+
+
+                sh 'npm i'
            }
  
            stage('Run Tests') {
